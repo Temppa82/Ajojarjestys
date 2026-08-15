@@ -3,24 +3,25 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#1f2937"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg">
-<title>AjoJärjestys v3.7.9</title>
+<title>AjoJärjestys v3.7.11</title>
 <style>
 *{box-sizing:border-box}body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;background:#f3f4f6;color:#111827}header{background:#1f2937;color:#fff;padding:15px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px}header small{opacity:.8}main{max-width:1250px;margin:22px auto;padding:0 15px}.card{background:#fff;border-radius:12px;padding:18px;margin-bottom:15px;box-shadow:0 2px 10px #0001}.drop{border:2px dashed #9ca3af;border-radius:10px;padding:30px;text-align:center}.actions{display:flex;gap:8px;flex-wrap:wrap}button{font:inherit;border:0;border-radius:8px;padding:9px 13px;background:#2563eb;color:#fff;cursor:pointer}button.secondary{background:#6b7280}button:disabled{opacity:.5;cursor:not-allowed}table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:top}input[type=text]{width:100%;padding:8px;border:1px solid #d1d5db;border-radius:6px}.bad{background:#fee2e2}.ok{background:#dcfce7}.muted{color:#6b7280}.status{white-space:nowrap}dialog{border:0;border-radius:12px;max-width:900px;width:92%;padding:0;box-shadow:0 15px 60px #0006}dialog::backdrop{background:#0007}.dlg{padding:18px}.previewWrap{background:#111827;border-radius:8px;padding:8px;text-align:center;max-height:55vh;overflow:auto}.previewWrap img{max-width:100%;height:auto;display:block;margin:auto}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.grid{grid-template-columns:1fr}table{font-size:14px}}
 </style>
 </head>
 <body>
-<header><div><strong>AjoJärjestys</strong> <small>v3.7.9</small><br><small>Teemu H. Fingerroos</small></div><div><select id="lang"><option value="fi">Suomi</option><option value="en">English</option></select></div></header>
+<header><div><strong>AjoJärjestys</strong> <small>v3.7.11</small><br><small>Teemu H. Fingerroos</small></div><div><select id="lang"><option value="fi">Suomi</option><option value="en">English</option></select></div></header>
 <main>
 <section class="card"><h2 data-t="title">PDF-lähetteet</h2><div id="drop" class="drop"><p data-t="drop">Vedä PDF:t tähän tai valitse tiedostot.</p><input id="files" type="file" accept="application/pdf" multiple></div><p id="status" class="muted"></p></section>
-<section class="card"><div class="actions"><button id="acceptAll" data-t="acceptAll">Hyväksy kaikki</button><button id="optimize" disabled data-t="optimize">Optimoi</button><button id="clear" class="secondary" data-t="clear">Tyhjennä</button><button id="settings" class="secondary" data-t="settings">Asetukset</button></div></section>
+<section class="card"><div class="actions"><button id="acceptAll" data-t="acceptAll">Hyväksy kaikki</button><button id="optimize" disabled data-t="optimize">Optimoi</button><button id="clear" class="secondary" data-t="clear">Tyhjennä</button><button id="mergePdf" data-t="mergePdf">Yhdistä PDF:t</button><button id="settings" class="secondary" data-t="settings">Asetukset</button></div></section>
 <section class="card"><table><thead><tr><th>#</th><th data-t="recipient">Vastaanottaja</th><th data-t="address">Osoite</th><th data-t="status">Tila</th><th></th></tr></thead><tbody id="rows"></tbody></table></section>
 </main>
 <dialog id="settingsDlg"><div class="dlg"><h2 data-t="settings">Asetukset</h2><div class="grid"><div><label data-t="start">Lähtöosoite</label><input id="start" type="text" value="Itäinen valkoisenlähteentie 18, Vantaa"></div><div><label data-t="end">Päivän päättymisosoite</label><input id="end" type="text" placeholder="esim. koti"></div></div><p><button id="closeSettings" data-t="close">Sulje</button> <button id="downloadLog" class="secondary" data-t="log">Lataa loki</button></p></div></dialog>
 <dialog id="reviewDlg"><div class="dlg"><h2 data-t="review">Tarkista tiedot</h2><p id="queue" class="muted"></p><div class="previewWrap"><img id="previewImg" alt="PDF:n vastaanottaja-alue"></div><p id="previewStatus" class="muted"></p><div class="grid"><div><label data-t="recipient">Vastaanottaja</label><input id="editRecipient" type="text"></div><div><label data-t="address">Osoite</label><input id="editAddress" type="text"></div></div><p><button id="prev" class="secondary">◀</button> <button id="next" class="secondary">▶</button> <button id="save" data-t="save">Hyväksy</button> <button id="cancel" class="secondary" data-t="close">Sulje</button></p></div></dialog>
 <script type="module">
 const pdfjs=await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs');
+const { PDFDocument }=await import('https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/+esm');
 pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
-const T={fi:{title:'PDF-lähetteet',drop:'Vedä PDF:t tähän tai valitse tiedostot.',acceptAll:'Hyväksy kaikki',optimize:'Optimoi',clear:'Tyhjennä',settings:'Asetukset',recipient:'Vastaanottaja',address:'Osoite',status:'Tila',start:'Lähtöosoite',end:'Päivän päättymisosoite',close:'Sulje',log:'Lataa loki',review:'Tarkista tiedot',save:'Hyväksy',ok:'✓ Hyväksytty',reviewStatus:'⚠ Tarkista',noAddress:'❌ Ei osoitetta',processing:'Käsitellään...',found:'PDF käsitelty',none:'Ei tunnistettu'},en:{title:'PDF referrals',drop:'Drop PDFs here or choose files.',acceptAll:'Accept all',optimize:'Optimize',clear:'Clear',settings:'Settings',recipient:'Recipient',address:'Address',status:'Status',start:'Start address',end:'End-of-day address',close:'Close',log:'Download log',review:'Review data',save:'Accept',ok:'✓ Accepted',reviewStatus:'⚠ Review',noAddress:'❌ No address',processing:'Processing...',found:'PDF processed',none:'Not recognized'}};
+const T={fi:{title:'PDF-lähetteet',drop:'Vedä PDF:t tähän tai valitse tiedostot.',acceptAll:'Hyväksy kaikki',optimize:'Optimoi',clear:'Tyhjennä',settings:'Asetukset',recipient:'Vastaanottaja',address:'Osoite',status:'Tila',start:'Lähtöosoite',end:'Päivän päättymisosoite',close:'Sulje',log:'Lataa loki',mergePdf:'Yhdistä ja lataa PDF:t',review:'Tarkista tiedot',save:'Hyväksy',ok:'✓ Hyväksytty',reviewStatus:'⚠ Tarkista',noAddress:'❌ Ei osoitetta',processing:'Käsitellään...',found:'PDF käsitelty',none:'Ei tunnistettu'},en:{title:'PDF referrals',drop:'Drop PDFs here or choose files.',acceptAll:'Accept all',optimize:'Optimize',clear:'Clear',settings:'Settings',recipient:'Recipient',address:'Address',status:'Status',start:'Start address',end:'End-of-day address',close:'Close',log:'Download log',mergePdf:'Merge and download PDFs',review:'Review data',save:'Accept',ok:'✓ Accepted',reviewStatus:'⚠ Review',noAddress:'❌ No address',processing:'Processing...',found:'PDF processed',none:'Not recognized'}};
 const state={rows:[],lang:localStorage.ajLang||'fi',end:localStorage.ajEnd||'',start:localStorage.ajStart||'Itäinen valkoisenlähteentie 18, Vantaa',reviewIndex:-1};
 const tr=k=>(T[state.lang]||T.fi)[k]||k;
 function applyLang(){document.querySelectorAll('[data-t]').forEach(e=>e.textContent=tr(e.dataset.t));document.getElementById('lang').value=state.lang}
@@ -121,6 +122,7 @@ async function runOptimize(){
     const orderedRows=result.order.map(i=>valid[i]);
     const invalid=state.rows.filter(r=>!r.accepted||!r.address);
     state.rows=[...orderedRows,...invalid];
+    state.optimized=true;
     render();
     document.getElementById('status').textContent=formatRouteResult(result.distance,result.duration);
     log(`Reitti optimoitu: ${orderedRows.length} pysäkkiä, ${Math.round(result.distance)} m, ${Math.round(result.duration)} s`);
@@ -141,15 +143,40 @@ function render(){
     trEl.innerHTML=`<td>${i+1}</td><td><input data-i="${i}" data-f="recipient" value="${esc(r.recipient)}"></td><td><input data-i="${i}" data-f="address" value="${esc(r.address)}"></td><td class="status">${r.address?(r.accepted?tr('ok'):tr('reviewStatus')):tr('noAddress')}</td><td><button data-review="${i}">✎</button></td>`;
     rowsEl.appendChild(trEl);
   });
-  document.getElementById('optimize').disabled=state.rows.length===0||state.rows.some(r=>!r.accepted||!r.address);
+  document.getElementById('optimize').disabled=state.rows.length===0||state.rows.some(r=>!r.accepted||!r.address);document.getElementById('mergePdf').disabled=!state.optimized;
 }
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-async function processFiles(files){state.rows=[];document.getElementById('status').textContent=tr('processing');for(const file of [...files]){try{const r=await extract(file);r.accepted=!!r.parsed.address;r.recipient=r.parsed.recipient;r.address=r.parsed.address;r.file=file;r.page=r.pageNumber;r.pdf=r.pdf;r.label=r.parsed.label;r.preview=null;state.rows.push(r);log('PDF käsitelty: '+file.name+' | osoite '+(r.address?'löytyi':'ei löytynyt'));}catch(e){state.rows.push({file,recipient:tr('none'),address:'',accepted:false});log('PDF-käsittely epäonnistui: '+file.name+' | '+e.name)}}document.getElementById('status').textContent=`${state.rows.length} PDF`;render();const first=state.rows.findIndex(r=>!r.address||r.recipient===tr('none'));if(first>=0)openReview(first)}
+async function processFiles(files){state.rows=[];state.optimized=false;document.getElementById('status').textContent=tr('processing');for(const file of [...files]){try{const r=await extract(file);r.accepted=!!r.parsed.address;r.recipient=r.parsed.recipient;r.address=r.parsed.address;r.file=file;r.page=r.pageNumber;r.pdf=r.pdf;r.label=r.parsed.label;r.preview=null;state.rows.push(r);log('PDF käsitelty: '+file.name+' | osoite '+(r.address?'löytyi':'ei löytynyt'));}catch(e){state.rows.push({file,recipient:tr('none'),address:'',accepted:false});log('PDF-käsittely epäonnistui: '+file.name+' | '+e.name)}}document.getElementById('status').textContent=`${state.rows.length} PDF`;render();const first=state.rows.findIndex(r=>!r.address||r.recipient===tr('none'));if(first>=0)openReview(first)}
 const drop=document.getElementById('drop');document.getElementById('files').onchange=e=>processFiles(e.target.files);drop.ondragover=e=>e.preventDefault();drop.ondrop=e=>{e.preventDefault();processFiles(e.dataTransfer.files)};
-document.getElementById('optimize').onclick=runOptimize;document.getElementById('acceptAll').onclick=()=>{state.rows.forEach(r=>{if(r.address)r.accepted=true});render();log('Kaikki löydetyt osoitteet hyväksytty')};document.getElementById('clear').onclick=()=>{state.rows=[];render();document.getElementById('status').textContent='';log('Työlista tyhjennetty')};
+function dateStamp(){const d=new Date();return d.toISOString().slice(0,10)}
+function downloadBlob(blob,name){const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+async function mergePdfs(){
+  if(!state.optimized){alert(state.lang==='fi'?'Optimoi reitti ensin.':'Optimize the route first.');return}
+  const btn=document.getElementById('mergePdf');
+  const old=btn.textContent;btn.disabled=true;btn.textContent=state.lang==='fi'?'Yhdistetään...':'Merging...';
+  try{
+    const out=await PDFDocument.create();
+    for(let i=0;i<state.rows.length;i++){
+      const r=state.rows[i];
+      btn.textContent=state.lang==='fi'?`Yhdistetään ${i+1}/${state.rows.length}...`:`Merging ${i+1}/${state.rows.length}...`;
+      const bytes=await r.file.arrayBuffer();
+      const src=await PDFDocument.load(bytes,{ignoreEncryption:true});
+      const pages=await out.copyPages(src,src.getPageIndices());
+      pages.forEach(page=>out.addPage(page));
+    }
+    const bytes=await out.save();
+    downloadBlob(new Blob([bytes],{type:'application/pdf'}),`Ajo_${dateStamp()}.pdf`);
+    document.getElementById('status').textContent=state.lang==='fi'?`PDF:t yhdistetty: ${state.rows.length} lähetettä`:`PDFs merged: ${state.rows.length} referrals`;
+    log(`PDF:t yhdistetty: ${state.rows.length} tiedostoa`)
+  }catch(e){
+    log('PDF-yhdistäminen epäonnistui: '+(e?.stack||e));
+    alert((state.lang==='fi'?'PDF:ien yhdistäminen epäonnistui:\n':'PDF merge failed:\n')+(e?.message||e));
+  }finally{btn.disabled=!state.optimized;btn.textContent=old}
+}
+document.getElementById('optimize').onclick=runOptimize;document.getElementById('acceptAll').onclick=()=>{state.rows.forEach(r=>{if(r.address)r.accepted=true});state.optimized=false;render();log('Kaikki löydetyt osoitteet hyväksytty')};document.getElementById('clear').onclick=()=>{state.rows=[];state.optimized=false;render();document.getElementById('status').textContent='';log('Työlista tyhjennetty')};document.getElementById('mergePdf').onclick=mergePdfs;
 document.getElementById('settings').onclick=()=>document.getElementById('settingsDlg').showModal();document.getElementById('closeSettings').onclick=()=>document.getElementById('settingsDlg').close();document.getElementById('lang').onchange=e=>{state.lang=e.target.value;localStorage.ajLang=state.lang;applyLang();render()};document.getElementById('start').onchange=e=>{state.start=e.target.value;localStorage.ajStart=state.start};document.getElementById('end').onchange=e=>{state.end=e.target.value;localStorage.ajEnd=state.end};document.getElementById('downloadLog').onclick=()=>{const b=new Blob([JSON.stringify(JSON.parse(localStorage.ajLog||'[]'),null,2)],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AjoJarjestys-log.txt';a.click();URL.revokeObjectURL(a.href)};
 function openReview(i){state.reviewIndex=i;const r=state.rows[i];document.getElementById('editRecipient').value=r.recipient||'';document.getElementById('editAddress').value=r.address||'';document.getElementById('queue').textContent=`${i+1} / ${state.rows.length} — ${r.file.name}`;document.getElementById('previewStatus').textContent='';document.getElementById('previewImg').src='';document.getElementById('reviewDlg').showModal();cropPreview(r.pdf,r.page,r.label).then(src=>{if(src)document.getElementById('previewImg').src=src;else document.getElementById('previewStatus').textContent='PDF-esikatselua ei voitu rajata.'}).catch(e=>document.getElementById('previewStatus').textContent='PDF-esikatselu epäonnistui: '+e.name)}
-rowsEl.onclick=e=>{const b=e.target.closest('[data-review]');if(b)openReview(+b.dataset.review)};rowsEl.onchange=e=>{const i=e.target.dataset.i;if(i!==undefined){state.rows[+i][e.target.dataset.f]=e.target.value;state.rows[+i].accepted=!!state.rows[+i].address;render()}};
+rowsEl.onclick=e=>{const b=e.target.closest('[data-review]');if(b)openReview(+b.dataset.review)};rowsEl.onchange=e=>{const i=e.target.dataset.i;if(i!==undefined){state.rows[+i][e.target.dataset.f]=e.target.value;state.rows[+i].accepted=!!state.rows[+i].address;state.optimized=false;render()}};
 document.getElementById('save').onclick=()=>{const r=state.rows[state.reviewIndex];r.recipient=norm(document.getElementById('editRecipient').value);r.address=norm(document.getElementById('editAddress').value);r.accepted=!!r.address;document.getElementById('reviewDlg').close();render();log('Osoite/vastaanottaja korjattu')};document.getElementById('cancel').onclick=()=>document.getElementById('reviewDlg').close();document.getElementById('prev').onclick=()=>{if(state.reviewIndex>0)openReview(state.reviewIndex-1)};document.getElementById('next').onclick=()=>{if(state.reviewIndex<state.rows.length-1)openReview(state.reviewIndex+1)};
-if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(e=>log('SW '+e.name));log('AjoJärjestys PWA v3.7.9 käynnistetty');
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(e=>log('SW '+e.name));log('AjoJärjestys PWA v3.7.11 käynnistetty');
 </script></body></html>

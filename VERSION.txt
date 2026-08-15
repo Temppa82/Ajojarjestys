@@ -1,5 +1,6 @@
-AjoJärjestys 3.7.9 (PWA fixed)
+AjoJärjestys 3.7.11 (PWA)
 Tekijä: Teemu H. Fingerroos
 
-Uutta: turvallinen paikallinen lokitus ja FI/EN-kielirunko.
-PDF- ja osoitetunnistuksen nykyinen logiikka säilytetään ennallaan.
+Uutta: PDF-tiedostojen yhdistäminen ja lataaminen optimoidussa ajojärjestyksessä.
+Erillinen ajojärjestyksen TXT-tallennus poistettu.
+Reitityksen optimointi ja nykyinen PDF-/osoitetunnistus säilytetään.

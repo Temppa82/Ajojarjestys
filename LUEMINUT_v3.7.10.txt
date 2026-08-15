@@ -1,0 +1,9 @@
+AjoJärjestys v3.7.11 – Chromebook / PWA
+
+1. Lataa PDF-lähetteet.
+2. Hyväksy tunnistetut osoitteet tai korjaa ne manuaalisesti.
+3. Optimoi ajoreitti.
+4. Yhdistä ja lataa PDF:t TXT-tiedostoksi tarvittaessa.
+5. Paina Yhdistä PDF:t, jos haluat yhden PDF-tiedoston optimoidussa järjestyksessä.
+
+Yhdistetty PDF sisältää jokaisen alkuperäisen PDF:n kaikki sivut siinä järjestyksessä, joka työlistassa on yhdistämishetkellä.
