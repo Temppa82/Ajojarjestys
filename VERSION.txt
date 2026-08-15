@@ -1,0 +1,5 @@
+AjoJärjestys 3.7.8
+Tekijä: Teemu H. Fingerroos
+
+Uutta: turvallinen paikallinen lokitus ja FI/EN-kielirunko.
+PDF- ja osoitetunnistuksen nykyinen logiikka säilytetään ennallaan.

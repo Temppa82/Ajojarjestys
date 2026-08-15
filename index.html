@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#1f2937">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg">
+  <title>AjoJärjestys v3.7.8</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;margin:0;background:#f3f4f6;color:#111827}
+    header{background:#1f2937;color:#fff;padding:16px 22px;display:flex;justify-content:space-between;align-items:center}
+    main{max-width:1200px;margin:24px auto;padding:0 16px}
+    .card{background:#fff;border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 2px 10px #0001}
+    button,input{font:inherit} button{padding:9px 13px;border:0;border-radius:8px;cursor:pointer;background:#2563eb;color:#fff}
+    button.secondary{background:#6b7280}.drop{border:2px dashed #9ca3af;border-radius:10px;padding:35px;text-align:center}
+    table{width:100%;border-collapse:collapse} th,td{padding:9px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:top}
+    input[type=text]{width:100%;box-sizing:border-box;padding:8px;border:1px solid #d1d5db;border-radius:6px}
+    .muted{color:#6b7280}.actions{display:flex;gap:8px;flex-wrap:wrap}.bad{background:#fee2e2}.ok{background:#dcfce7}
+    dialog{border:0;border-radius:12px;max-width:720px;width:90%;box-shadow:0 10px 40px #0005} dialog::backdrop{background:#0006}
+  </style>
+</head>
+<body>
+<header><div><strong>AjoJärjestys</strong> <span id="version">v3.7.8</span></div><div id="langLabel">Suomi / English</div></header>
+<main>
+  <section class="card">
+    <h2 data-i18n="title">PDF-lähetteet</h2>
+    <div id="drop" class="drop">
+      <p data-i18n="drop">Vedä PDF:t tähän tai valitse tiedostot.</p>
+      <input id="files" type="file" accept="application/pdf" multiple>
+    </div>
+    <p class="muted" id="status"></p>
+  </section>
+  <section class="card">
+    <div class="actions">
+      <button id="acceptAll" data-i18n="acceptAll">Hyväksy kaikki</button>
+      <button id="clear" class="secondary" data-i18n="clear">Tyhjennä</button>
+      <button id="settings" class="secondary" data-i18n="settings">Asetukset</button>
+    </div>
+  </section>
+  <section class="card">
+    <table>
+      <thead><tr><th data-i18n="recipient">Vastaanottaja</th><th data-i18n="address">Osoite</th><th data-i18n="status">Tila</th><th></th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+</main>
+
+<dialog id="settingsDialog">
+  <h2 data-i18n="settings">Asetukset</h2>
+  <p><label data-i18n="language">Kieli</label>
+    <select id="language"><option value="fi">Suomi</option><option value="en">English</option></select>
+  </p>
+  <p><b data-i18n="start">Lähtöosoite</b><br>Itäinen valkoisenlähteentie 18, Vantaa</p>
+  <p><b data-i18n="end">Päivän päättymisosoite</b><br><input id="endAddress" type="text" placeholder="esim. koti"></p>
+  <p><button id="openLog" class="secondary" data-i18n="log">Lataa loki</button>
+     <button id="closeSettings" data-i18n="close">Sulje</button></p>
+</dialog>
+
+<dialog id="reviewDialog">
+  <h2 data-i18n="review">Tarkista osoite</h2>
+  <div id="preview" style="max-height:55vh;overflow:auto"></div>
+  <p><label data-i18n="recipient">Vastaanottaja</label><input id="editRecipient" type="text"></p>
+  <p><label data-i18n="address">Osoite</label><input id="editAddress" type="text"></p>
+  <button id="saveReview" data-i18n="save">Hyväksy</button>
+  <button id="cancelReview" class="secondary" data-i18n="close">Sulje</button>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs" type="module"></script>
+<script type="module">
+const state={rows:[],lang:localStorage.getItem('aj_lang')||'fi',end:localStorage.getItem('aj_end')||''};
+const T={fi:{title:'PDF-lähetteet',drop:'Vedä PDF:t tähän tai valitse tiedostot.',acceptAll:'Hyväksy kaikki',clear:'Tyhjennä',settings:'Asetukset',recipient:'Vastaanottaja',address:'Osoite',status:'Tila',language:'Kieli',start:'Lähtöosoite',end:'Päivän päättymisosoite',log:'Lataa loki',close:'Sulje',review:'Tarkista osoite',save:'Hyväksy',recognized:'Tunnistettu',needs:'Tarkistus tarvitaan',processing:'Käsitellään...'},
+en:{title:'PDF referrals',drop:'Drop PDFs here or choose files.',acceptAll:'Accept all',clear:'Clear',settings:'Settings',recipient:'Recipient',address:'Address',status:'Status',language:'Language',start:'Start address',end:'End-of-day address',log:'Download log',close:'Close',review:'Review address',save:'Accept',recognized:'Recognized',needs:'Review required',processing:'Processing...'}};
+function tr(k){return (T[state.lang]||T.fi)[k]||k}
+function applyLang(){document.documentElement.lang=state.lang;document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=tr(e.dataset.i18n));document.getElementById('language').value=state.lang}
+applyLang();
+
+const rowsEl=document.getElementById('rows'), statusEl=document.getElementById('status');
+function log(msg){const a=JSON.parse(localStorage.getItem('aj_log')||'[]');a.push(new Date().toISOString()+' '+msg);localStorage.setItem('aj_log',JSON.stringify(a.slice(-500)))}
+function render(){rowsEl.innerHTML='';state.rows.forEach((r,i)=>{const trEl=document.createElement('tr');trEl.className=(!r.address?'bad':r.accepted?'ok':'');trEl.innerHTML=`<td><input data-r="${i}" data-f="recipient" value="${esc(r.recipient||'')}"></td><td><input data-r="${i}" data-f="address" value="${esc(r.address||'')}"></td><td>${r.address?tr(r.accepted? 'recognized':'needs') : tr('needs')}</td><td><button data-review="${i}">✎</button></td>`;rowsEl.appendChild(trEl)})}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function findAddress(text){
+  const lines=text.split(/\\r?\\n/).map(x=>x.trim()).filter(Boolean);
+  const re=/^(.{2,60}?(?:katu|tie|kuja|polku|raitti|väylä|kaari|aukio|tori|rinne|mäki|salmenkatu|lähteentie|keskuskatu|teollisuustie|asematie|rantatie)[^\\n]{0,30})\\s+(\\d{1,4}(?:\\s?[-/]\\s?\\d{1,4})?[A-Za-z]?)\\s*,?\\s*(\\d{5})\\s+([A-Za-zÅÄÖåäö-]{2,40})$/i;
+  const compact=/^(.+?)\\s+(\\d{1,4}(?:\\s?[-/]\\s?\\d{1,4})?[A-Za-z]?)\\s*,?\\s*(\\d{5})\\s+(.+)$/;
+  for(let i=0;i<lines.length;i++){let m=lines[i].match(re)||lines[i].match(compact);if(m){let street=(m[1]+' '+m[2]).replace(/\\s+/g,' ').trim();return `${street}, ${m[3]} ${m[4].trim()}`}}
+  return '';
+}
+function findRecipient(text,address){
+  const lines=text.split(/\\r?\\n/).map(x=>x.trim()).filter(Boolean);
+  if(address){const idx=lines.findIndex(x=>x.toLowerCase().includes(address.split(',')[0].toLowerCase().split(' ')[0]));if(idx>0){for(let j=Math.max(0,idx-3);j<idx;j++){const x=lines[j];if(x.length>2&&x.length<80&&!/^(suomi|finland|vastaanottaja|osoite|lähete|mehiläinen|attendo)$/i.test(x)) return x}}}
+  return '';
+}
+async function pdfText(file){
+  const pdfjs=await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs');
+  pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
+  const pdf=await pdfjs.getDocument({data:await file.arrayBuffer()}).promise; let all='';
+  for(let p=1;p<=pdf.numPages;p++){const page=await pdf.getPage(p);const c=await page.getTextContent();all+=c.items.map(x=>x.str).join('\\n')+'\\n'}
+  return all;
+}
+async function processFiles(files){state.rows=[];statusEl.textContent=tr('processing');for(const file of files){try{const text=await pdfText(file);const address=findAddress(text);const recipient=findRecipient(text,address);state.rows.push({file:file.name,recipient,address,accepted:!!address});log('PDF käsitelty: '+(address?'osoite tunnistettu':'osoite vaatii tarkistuksen'));}catch(e){state.rows.push({file:file.name,recipient:'',address:'',accepted:false});log('PDF-käsittely epäonnistui: '+e.name)}}statusEl.textContent=`${state.rows.length} PDF`;render()}
+document.getElementById('files').onchange=e=>processFiles(e.target.files);
+const drop=document.getElementById('drop');drop.ondragover=e=>{e.preventDefault()};drop.ondrop=e=>{e.preventDefault();processFiles(e.dataTransfer.files)};
+document.getElementById('acceptAll').onclick=()=>{state.rows.forEach(r=>r.accepted=!!r.address);render();log('Kaikki osoitteet hyväksytty')};
+document.getElementById('clear').onclick=()=>{state.rows=[];render();statusEl.textContent='';log('Työlista tyhjennetty')};
+document.getElementById('settings').onclick=()=>document.getElementById('settingsDialog').showModal();
+document.getElementById('closeSettings').onclick=()=>document.getElementById('settingsDialog').close();
+document.getElementById('language').onchange=e=>{state.lang=e.target.value;localStorage.setItem('aj_lang',state.lang);applyLang();render();log('Kieli vaihdettu')};
+document.getElementById('endAddress').value=state.end;
+document.getElementById('endAddress').onchange=e=>{state.end=e.target.value;localStorage.setItem('aj_end',state.end)};
+document.getElementById('openLog').onclick=()=>{const blob=new Blob([JSON.stringify(JSON.parse(localStorage.getItem('aj_log')||'[]'),null,2)],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AjoJarjestys-log.txt';a.click();URL.revokeObjectURL(a.href)};
+let reviewIndex=-1;
+rowsEl.onclick=e=>{const b=e.target.closest('[data-review]');if(!b)return;reviewIndex=+b.dataset.review;const r=state.rows[reviewIndex];document.getElementById('editRecipient').value=r.recipient||'';document.getElementById('editAddress').value=r.address||'';document.getElementById('preview').textContent='PDF: '+r.file;document.getElementById('reviewDialog').showModal()};
+document.getElementById('saveReview').onclick=()=>{const r=state.rows[reviewIndex];r.recipient=document.getElementById('editRecipient').value;r.address=document.getElementById('editAddress').value;r.accepted=!!r.address;document.getElementById('reviewDialog').close();render();log('Osoiterivi korjattu')};
+document.getElementById('cancelReview').onclick=()=>document.getElementById('reviewDialog').close();
+rowsEl.onchange=e=>{const r=e.target.dataset.r;if(r!==undefined){state.rows[+r][e.target.dataset.f]=e.target.value;state.rows[+r].accepted=!!state.rows[+r].address;render()}};
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(e=>log('Service worker: '+e.name));
+log('AjoJärjestys PWA v3.7.8 käynnistetty');
+</script>
+</body></html>

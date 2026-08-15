@@ -1,0 +1,15 @@
+AJOJÄRJESTYS v3.7.8
+Tekijä: Teemu H. Fingerroos
+
+Uutta tässä versiossa:
+- paikallinen lokitus mahdollisia kaatumisia ja virheitä varten
+- lokiin ei kirjoiteta PDF:n tekstisisältöä, vastaanottajan nimeä tai osoitetta
+- suomi/englanti-kielirunko seuraavaa käyttöliittymäpäivitystä varten
+- nykyinen osoite- ja vastaanottajatunnistus jätetään ennalleen
+
+Lokit:
+Windowsin paikallinen lokikansio: %LOCALAPPDATA%\AjoJarjestys\Logs
+
+Huomio:
+Tämä lähdekoodipaketti ei muuta olemassa olevaa PDF:n osoitetunnistuslogiikkaa.
+Kielivalinta voidaan kytkeä olemassa oleviin käyttöliittymäteksteihin vaiheittain.
