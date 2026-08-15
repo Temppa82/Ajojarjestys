@@ -1,4 +1,4 @@
-AJOJÄRJESTYS v3.7.8 – PWA / Chromebook
+AJOJÄRJESTYS v3.7.9 – PWA / Chromebook
 Tekijä: Teemu H. Fingerroos
 
 Tämä PWA-versio on päivitetty Windows v3.7.7 -version toimivan osoite- ja vastaanottajatunnistuksen pohjalta.

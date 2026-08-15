@@ -1,4 +1,4 @@
-AJOJÄRJESTYS v3.7.8
+AJOJÄRJESTYS v3.7.9
 Tekijä: Teemu H. Fingerroos
 
 Uutta tässä versiossa:

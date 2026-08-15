@@ -1,4 +1,4 @@
-AjoJärjestys 3.7.8
+AjoJärjestys 3.7.9 (PWA fixed)
 Tekijä: Teemu H. Fingerroos
 
 Uutta: turvallinen paikallinen lokitus ja FI/EN-kielirunko.
