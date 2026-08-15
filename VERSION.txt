@@ -1,4 +1,1 @@
-AjoJärjestys PWA v3.9.0
-
-Windows v3 -muotokieli ja värimaailma tuotu PWA-versioon.
-Toiminnallisuus säilytetty: osoitetunnistus, hyväksyntä, reittioptimointi, manuaalinen raahaus ja PDF-yhdistäminen.
+AjoJärjestys PWA v3.9.1

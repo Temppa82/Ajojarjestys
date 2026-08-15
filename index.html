@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#1f2937"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg">
-<title>AjoJärjestys v3.9.0</title>
+<title>AjoJärjestys v3.9.1</title>
 <style>
 *{box-sizing:border-box}
 :root{
@@ -96,16 +96,16 @@ dialog::backdrop{background:#0006}
 <body>
 <header>
   <div class="brand">AJOJÄRJESTYS</div>
-  <div class="tagline">PDF-lähetteet → tarkistetut osoitteet → tieverkon mukaan optimoitu reitti</div>
-  <div class="version">v3.9.0 • Luoja: Teemu H. Fingerroos</div>
+  <div class="tagline" data-t="tagline">PDF-lähetteet → tarkistetut osoitteet → tieverkon mukaan optimoitu reitti</div>
+  <div class="version">v3.9.1 • Luoja: Teemu H. Fingerroos</div>
   <div class="langBox"><select id="lang"><option value="fi">Suomi</option><option value="en">English</option></select></div>
 </header>
 <main>
   <section class="topbar">
     <div class="topbarInner">
       <div>
-        <strong>PDF-lähetteet</strong>
-        <div class="topbarHint">Lisää PDF:t tai raahaa ne tähän.</div>
+        <strong data-t="pdfTitle">PDF-lähetteet</strong>
+        <div class="topbarHint" data-t="addHint">Lisää PDF:t tai raahaa ne tähän.</div>
       </div>
       <div class="actions">
         <button id="clear" class="secondary" data-t="clear">Tyhjennä</button>
@@ -120,14 +120,14 @@ dialog::backdrop{background:#0006}
 
   <div class="layout">
     <section class="tablePanel">
-      <h2 class="sectionTitle">Lähetteet / pysäkit</h2>
+      <h2 class="sectionTitle" data-t="tableTitle">Lähetteet / pysäkit</h2>
       <p class="dragHint" data-t="dragHint">Kun reitti on optimoitu, voit vetää pysäkkejä ☰-kahvasta ja muuttaa järjestystä käsin. Yhdistetty PDF käyttää lopullista järjestystä.</p>
       <div class="tableWrap">
         <table>
           <thead>
             <tr>
               <th>#</th>
-              <th>Lähete</th>
+              <th data-t="deliveryNote">Lähete</th>
               <th data-t="recipient">Vastaanottaja</th>
               <th data-t="address">Osoite</th>
               <th data-t="status">Tila</th>
@@ -140,30 +140,30 @@ dialog::backdrop{background:#0006}
     </section>
 
     <aside class="sidePanel">
-      <h3>1. Osoitteiden tarkistus</h3>
+      <h3 data-t="step1">1. Osoitteiden tarkistus</h3>
       <p id="validationSummary" class="summary"></p>
 
       <label data-t="start">Lähtöosoite</label>
       <input id="start" type="text" value="Itäinen valkoisenlähteentie 18, Vantaa">
 
       <label data-t="end">Päivän pääteosoite</label>
-      <input id="end" type="text" placeholder="esim. koti">
-      <p class="hint">Esim. koti. Jos jätät tyhjäksi, reitti ei pakota päätepistettä.</p>
+      <input id="end" type="text" placeholder="esim. koti" data-t-attr="endPlaceholder">
+      <p class="hint" data-t="endHint">Esim. koti. Jos jätät tyhjäksi, reitti ei pakota päätepistettä.</p>
 
       <button id="acceptAll" data-t="acceptAll">✓ Hyväksy kaikki osoitteet</button>
       <button id="settings" class="secondary" data-t="settings">Asetukset</button>
 
       <hr>
 
-      <h3>2. Tieverkon optimointi</h3>
+      <h3 data-t="step2">2. Tieverkon optimointi</h3>
       <p id="routeSummary" class="summary"></p>
       <button id="optimize" class="primary" disabled data-t="optimize">OPTIMOI AJOREITTI</button>
-      <p class="hint">Internet-yhteys tarvitaan uusien osoitteiden ja reitin hakemiseen.</p>
+      <p class="hint" data-t="internetHint">Internet-yhteys tarvitaan uusien osoitteiden ja reitin hakemiseen.</p>
 
       <hr>
 
-      <h3>3. Lopputulos</h3>
-      <p class="hint">Voit raahata pysähdyksiä käsin optimoinnin jälkeen. Lopullista järjestystä käytetään yhdistetyssä PDF:ssä.</p>
+      <h3 data-t="step3">3. Lopputulos</h3>
+      <p class="hint" data-t="finalHint">Voit raahata pysähdyksiä käsin optimoinnin jälkeen. Lopullista järjestystä käytetään yhdistetyssä PDF:ssä.</p>
     </aside>
   </div>
 
@@ -180,7 +180,7 @@ dialog::backdrop{background:#0006}
     <h2 data-t="settings">Asetukset</h2>
     <div class="grid">
       <div><label data-t="start">Lähtöosoite</label><input id="startSettings" type="text"></div>
-      <div><label data-t="end">Päivän pääteosoite</label><input id="endSettings" type="text" placeholder="esim. koti"></div>
+      <div><label data-t="end">Päivän pääteosoite</label><input id="endSettings" type="text" placeholder="esim. koti" data-t-attr="endPlaceholder"></div>
     </div>
     <p><button id="closeSettings" data-t="close">Sulje</button> <button id="downloadLog" class="secondary" data-t="log">Lataa loki</button></p>
   </div>
@@ -190,7 +190,7 @@ dialog::backdrop{background:#0006}
   <div class="dlg">
     <h2 data-t="review">Tarkista tiedot</h2>
     <p id="queue" class="muted"></p>
-    <div class="previewWrap"><img id="previewImg" alt="PDF:n vastaanottaja-alue"></div>
+    <div class="previewWrap"><img id="previewImg" alt="PDF:n vastaanottaja-alue" data-t-attr="previewAlt"></div>
     <p id="previewStatus" class="muted"></p>
     <div class="grid">
       <div><label data-t="recipient">Vastaanottaja</label><input id="editRecipient" type="text"></div>
@@ -203,10 +203,10 @@ dialog::backdrop{background:#0006}
 const pdfjs=await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs');
 const { PDFDocument }=await import('https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/+esm');
 pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
-const T={fi:{title:'PDF-lähetteet',drop:'Vedä PDF:t tähän tai valitse tiedostot.',acceptAll:'Hyväksy kaikki',optimize:'Optimoi',clear:'Tyhjennä',settings:'Asetukset',recipient:'Vastaanottaja',address:'Osoite',status:'Tila',order:'Järjestys',dragHint:'Kun reitti on optimoitu, voit vetää pysäkkejä ☰-kahvasta ja muuttaa järjestystä käsin. Yhdistetty PDF käyttää lopullista järjestystä.',start:'Lähtöosoite',end:'Päivän päättymisosoite',close:'Sulje',log:'Lataa loki',mergePdf:'Yhdistä ja lataa PDF:t',review:'Tarkista tiedot',save:'Hyväksy',ok:'✓ Hyväksytty',reviewStatus:'⚠ Tarkista',noAddress:'❌ Ei osoitetta',processing:'Käsitellään...',found:'PDF käsitelty',none:'Ei tunnistettu'},en:{title:'PDF referrals',drop:'Drop PDFs here or choose files.',acceptAll:'Accept all',optimize:'Optimize',clear:'Clear',settings:'Settings',recipient:'Recipient',address:'Address',status:'Status',order:'Order',dragHint:'After optimizing, drag the ☰ handle to change the order manually. The merged PDF uses the final order.',start:'Start address',end:'End-of-day address',close:'Close',log:'Download log',mergePdf:'Merge and download PDFs',review:'Review data',save:'Accept',ok:'✓ Accepted',reviewStatus:'⚠ Review',noAddress:'❌ No address',processing:'Processing...',found:'PDF processed',none:'Not recognized'}};
+const T={fi:{title:'PDF-lähetteet',tagline:'PDF-lähetteet → tarkistetut osoitteet → tieverkon mukaan optimoitu reitti',pdfTitle:'PDF-lähetteet',addHint:'Lisää PDF:t tai raahaa ne tähän.',drop:'Vedä PDF:t tähän tai valitse tiedostot.',tableTitle:'Lähetteet / pysäkit',deliveryNote:'Lähete',acceptAll:'✓ Hyväksy kaikki osoitteet',optimize:'OPTIMOI AJOREITTI',clear:'Tyhjennä',settings:'Asetukset',recipient:'Vastaanottaja',address:'Osoite',status:'Tila',order:'Järjestys',dragHint:'Kun reitti on optimoitu, voit vetää pysäkkejä ☰-kahvasta ja muuttaa järjestystä käsin. Yhdistetty PDF käyttää lopullista järjestystä.',start:'Lähtöosoite',end:'Päivän päättymisosoite',endHint:'Esim. koti. Jos jätät tyhjäksi, reitti ei pakota päätepistettä.',internetHint:'Internet-yhteys tarvitaan uusien osoitteiden ja reitin hakemiseen.',finalHint:'Voit raahata pysähdyksiä käsin optimoinnin jälkeen. Lopullista järjestystä käytetään yhdistetyssä PDF:ssä.',step1:'1. Osoitteiden tarkistus',step2:'2. Tieverkon optimointi',step3:'3. Lopputulos',close:'Sulje',log:'Lataa loki',mergePdf:'YHDISTÄ JA LATAA PDF:T',review:'Tarkista tiedot',save:'Hyväksy',ok:'✓ Hyväksytty',reviewStatus:'⚠ Tarkista',noAddress:'❌ Ei osoitetta',processing:'Käsitellään...',found:'PDF käsitelty',none:'Ei tunnistettu',previewAlt:'PDF:n vastaanottaja-alue',endPlaceholder:'esim. koti',dragTitle:'Vedä pysäkki uuteen paikkaan',noPreview:'PDF-esikatselua ei voitu rajata.',previewFail:'PDF-esikatselu epäonnistui'},en:{title:'PDF delivery notes',tagline:'PDF delivery notes → verified addresses → road-network optimized route',pdfTitle:'PDF delivery notes',addHint:'Add PDFs or drag them here.',drop:'Drop PDFs here or choose files.',tableTitle:'Delivery notes / stops',deliveryNote:'Delivery note',acceptAll:'✓ Accept all addresses',optimize:'OPTIMIZE ROUTE',clear:'Clear',settings:'Settings',recipient:'Recipient',address:'Address',status:'Status',order:'Order',dragHint:'After optimizing, drag the ☰ handle to change the order manually. The merged PDF uses the final order.',start:'Start address',end:'End-of-day address',endHint:'For example, home. If left empty, the route will not force an end point.',internetHint:'An internet connection is required to look up new addresses and routes.',finalHint:'You can manually drag stops after optimization. The final order is used in the merged PDF.',step1:'1. Address verification',step2:'2. Road-network optimization',step3:'3. Final result',close:'Close',log:'Download log',mergePdf:'MERGE AND DOWNLOAD PDFs',review:'Review details',save:'Accept',ok:'✓ Accepted',reviewStatus:'⚠ Review',noAddress:'❌ No address',processing:'Processing...',found:'PDF processed',none:'Not recognized',previewAlt:'PDF recipient area',endPlaceholder:'e.g. home',dragTitle:'Drag stop to a new position',noPreview:'PDF preview could not be cropped.',previewFail:'PDF preview failed'}};
 const state={rows:[],manualOrder:false,lang:localStorage.ajLang||'fi',end:localStorage.ajEnd||'',start:localStorage.ajStart||'Itäinen valkoisenlähteentie 18, Vantaa',reviewIndex:-1};
 const tr=k=>(T[state.lang]||T.fi)[k]||k;
-function applyLang(){document.querySelectorAll('[data-t]').forEach(e=>e.textContent=tr(e.dataset.t));document.getElementById('lang').value=state.lang}
+function applyLang(){document.querySelectorAll('[data-t]').forEach(e=>e.textContent=tr(e.dataset.t));document.querySelectorAll('[data-t-attr]').forEach(e=>{const k=e.dataset.tAttr;if(k==='previewAlt')e.alt=tr(k);if(k==='endPlaceholder')e.placeholder=tr(k)});document.getElementById('lang').value=state.lang;document.title='AjoJärjestys v3.9.1 — '+tr('title')}
 applyLang();document.getElementById('start').value=state.start;document.getElementById('end').value=state.end;
 function log(s){const a=JSON.parse(localStorage.ajLog||'[]');a.push(new Date().toISOString()+' '+s);localStorage.ajLog=JSON.stringify(a.slice(-500))}
 const norm=s=>String(s||'').replace(/\u00a0/g,' ').replace(/\s+/g,' ').trim();
@@ -322,13 +322,13 @@ function render(){
   state.rows.forEach((r,i)=>{
     const trEl=document.createElement('tr');
     trEl.className=!r.address?'bad':r.accepted?'ok':'';
-    trEl.innerHTML=`<td class="dragCell"><button class="dragHandle" draggable="true" data-drag="${i}" title="Vedä pysäkki uuteen paikkaan">☰</button><span>${i+1}</span></td><td class="fileCell" title="${esc(r.file?.name||'')}">${esc(r.file?.name||'')}</td><td><input data-i="${i}" data-f="recipient" value="${esc(r.recipient)}"></td><td><input data-i="${i}" data-f="address" value="${esc(r.address)}"></td><td class="status">${r.address?(r.accepted?tr('ok'):tr('reviewStatus')):tr('noAddress')}</td><td><button data-review="${i}">✎</button></td>`;
+    trEl.innerHTML=`<td class="dragCell"><button class="dragHandle" draggable="true" data-drag="${i}" title="Vedä pysäkki uuteen paikkaan" data-title-t="dragTitle">☰</button><span>${i+1}</span></td><td class="fileCell" title="${esc(r.file?.name||'')}">${esc(r.file?.name||'')}</td><td><input data-i="${i}" data-f="recipient" value="${esc(r.recipient)}"></td><td><input data-i="${i}" data-f="address" value="${esc(r.address)}"></td><td class="status">${r.address?(r.accepted?tr('ok'):tr('reviewStatus')):tr('noAddress')}</td><td><button data-review="${i}">✎</button></td>`;
     rowsEl.appendChild(trEl);
   });
   document.getElementById('optimize').disabled=state.rows.length===0||state.rows.some(r=>!r.accepted||!r.address);document.getElementById('mergePdf').disabled=!state.optimized;
 }
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-async function processFiles(files){state.rows=[];state.optimized=false;state.manualOrder=false;document.getElementById('status').textContent=tr('processing');for(const file of [...files]){try{const r=await extract(file);r.accepted=!!r.parsed.address;r.recipient=r.parsed.recipient;r.address=r.parsed.address;r.file=file;r.page=r.pageNumber;r.pdf=r.pdf;r.label=r.parsed.label;r.preview=null;state.rows.push(r);log('PDF käsitelty: '+file.name+' | osoite '+(r.address?'löytyi':'ei löytynyt'));}catch(e){state.rows.push({file,recipient:tr('none'),address:'',accepted:false});log('PDF-käsittely epäonnistui: '+file.name+' | '+e.name)}}document.getElementById('status').textContent=`${state.rows.length} PDF`;render();const first=state.rows.findIndex(r=>!r.address||r.recipient===tr('none'));if(first>=0)openReview(first)}
+async function processFiles(files){state.rows=[];state.optimized=false;state.manualOrder=false;document.getElementById('status').textContent=tr('processing');for(const file of [...files]){try{const r=await extract(file);r.accepted=!!r.parsed.address;r.recipient=r.parsed.recipient;r.address=r.parsed.address;r.file=file;r.page=r.pageNumber;r.pdf=r.pdf;r.label=r.parsed.label;r.preview=null;state.rows.push(r);log((state.lang==='fi'?'PDF käsitelty: ':'PDF processed: ')+file.name+' | '+(state.lang==='fi'?'osoite ':'address ')+(r.address?(state.lang==='fi'?'löytyi':'found'):(state.lang==='fi'?'ei löytynyt':'not found')));}catch(e){state.rows.push({file,recipient:tr('none'),address:'',accepted:false});log((state.lang==='fi'?'PDF-käsittely epäonnistui: ':'PDF processing failed: ')+file.name+' | '+e.name)}}document.getElementById('status').textContent=`${state.rows.length} PDF`;render();const first=state.rows.findIndex(r=>!r.address||r.recipient===tr('none'));if(first>=0)openReview(first)}
 const drop=document.getElementById('drop');document.getElementById('files').onchange=e=>processFiles(e.target.files);drop.ondragover=e=>e.preventDefault();drop.ondrop=e=>{e.preventDefault();processFiles(e.dataTransfer.files)};
 function dateStamp(){const d=new Date();return d.toISOString().slice(0,10)}
 function downloadBlob(blob,name){const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
@@ -348,24 +348,24 @@ async function mergePdfs(){
     }
     const bytes=await out.save();
     downloadBlob(new Blob([bytes],{type:'application/pdf'}),`Ajo_${dateStamp()}.pdf`);
-    document.getElementById('status').textContent=state.lang==='fi'?`PDF:t yhdistetty: ${state.rows.length} lähetettä`:`PDFs merged: ${state.rows.length} referrals`;
-    log(`PDF:t yhdistetty: ${state.rows.length} tiedostoa`)
+    document.getElementById('status').textContent=state.lang==='fi'?`PDF:t yhdistetty: ${state.rows.length} lähetettä`:`PDFs merged: ${state.rows.length} delivery notes`;
+    log(state.lang==='fi'?`PDF:t yhdistetty: ${state.rows.length} tiedostoa`:`PDFs merged: ${state.rows.length} files`)
   }catch(e){
     log('PDF-yhdistäminen epäonnistui: '+(e?.stack||e));
     alert((state.lang==='fi'?'PDF:ien yhdistäminen epäonnistui:\n':'PDF merge failed:\n')+(e?.message||e));
   }finally{btn.disabled=!state.optimized;btn.textContent=old}
 }
-document.getElementById('optimize').onclick=runOptimize;document.getElementById('acceptAll').onclick=()=>{state.rows.forEach(r=>{if(r.address)r.accepted=true});state.optimized=false;state.manualOrder=false;render();log('Kaikki löydetyt osoitteet hyväksytty')};document.getElementById('clear').onclick=()=>{state.rows=[];state.optimized=false;state.manualOrder=false;render();document.getElementById('status').textContent='';log('Työlista tyhjennetty')};document.getElementById('mergePdf').onclick=mergePdfs;
+document.getElementById('optimize').onclick=runOptimize;document.getElementById('acceptAll').onclick=()=>{state.rows.forEach(r=>{if(r.address)r.accepted=true});state.optimized=false;state.manualOrder=false;render();log(state.lang==='fi'?'Kaikki löydetyt osoitteet hyväksytty':'All found addresses accepted')};document.getElementById('clear').onclick=()=>{state.rows=[];state.optimized=false;state.manualOrder=false;render();document.getElementById('status').textContent='';log(state.lang==='fi'?'Työlista tyhjennetty':'Work list cleared')};document.getElementById('mergePdf').onclick=mergePdfs;
 document.getElementById('settings').onclick=()=>document.getElementById('settingsDlg').showModal();document.getElementById('closeSettings').onclick=()=>document.getElementById('settingsDlg').close();document.getElementById('lang').onchange=e=>{state.lang=e.target.value;localStorage.ajLang=state.lang;applyLang();render()};document.getElementById('start').onchange=e=>{state.start=e.target.value;localStorage.ajStart=state.start};document.getElementById('end').onchange=e=>{state.end=e.target.value;localStorage.ajEnd=state.end};document.getElementById('downloadLog').onclick=()=>{const b=new Blob([JSON.stringify(JSON.parse(localStorage.ajLog||'[]'),null,2)],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='AjoJarjestys-log.txt';a.click();URL.revokeObjectURL(a.href)};
-function openReview(i){state.reviewIndex=i;const r=state.rows[i];document.getElementById('editRecipient').value=r.recipient||'';document.getElementById('editAddress').value=r.address||'';document.getElementById('queue').textContent=`${i+1} / ${state.rows.length} — ${r.file.name}`;document.getElementById('previewStatus').textContent='';document.getElementById('previewImg').src='';document.getElementById('reviewDlg').showModal();cropPreview(r.pdf,r.page,r.label).then(src=>{if(src)document.getElementById('previewImg').src=src;else document.getElementById('previewStatus').textContent='PDF-esikatselua ei voitu rajata.'}).catch(e=>document.getElementById('previewStatus').textContent='PDF-esikatselu epäonnistui: '+e.name)}
+function openReview(i){state.reviewIndex=i;const r=state.rows[i];document.getElementById('editRecipient').value=r.recipient||'';document.getElementById('editAddress').value=r.address||'';document.getElementById('queue').textContent=`${i+1} / ${state.rows.length} — ${r.file.name}`;document.getElementById('previewStatus').textContent='';document.getElementById('previewImg').src='';document.getElementById('reviewDlg').showModal();cropPreview(r.pdf,r.page,r.label).then(src=>{if(src)document.getElementById('previewImg').src=src;else document.getElementById('previewStatus').textContent=tr('noPreview')}).catch(e=>document.getElementById('previewStatus').textContent=tr('previewFail')+': '+e.name)}
 rowsEl.onclick=e=>{const b=e.target.closest('[data-review]');if(b)openReview(+b.dataset.review)};
 let dragIndex=-1;
 rowsEl.ondragstart=e=>{const h=e.target.closest('[data-drag]');if(!h)return;dragIndex=+h.dataset.drag;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(dragIndex));};
 rowsEl.ondragover=e=>{const tr=e.target.closest('tr');if(!tr)return;e.preventDefault();tr.classList.add('dragOver');};
 rowsEl.ondragleave=e=>{const tr=e.target.closest('tr');if(tr)tr.classList.remove('dragOver');};
-rowsEl.ondrop=e=>{const tr=e.target.closest('tr');if(!tr||dragIndex<0)return;e.preventDefault();tr.classList.remove('dragOver');const target=[...rowsEl.querySelectorAll('tr')].indexOf(tr);if(target<0||target===dragIndex){dragIndex=-1;return}const moved=state.rows.splice(dragIndex,1)[0];state.rows.splice(target,0,moved);state.manualOrder=true;state.optimized=true;document.getElementById('status').textContent=state.lang==='fi'?'Järjestys muutettu käsin.':'Order changed manually.';render();log(`Järjestystä muutettu käsin: ${dragIndex+1} → ${target+1}`);dragIndex=-1;};
+rowsEl.ondrop=e=>{const tr=e.target.closest('tr');if(!tr||dragIndex<0)return;e.preventDefault();tr.classList.remove('dragOver');const target=[...rowsEl.querySelectorAll('tr')].indexOf(tr);if(target<0||target===dragIndex){dragIndex=-1;return}const moved=state.rows.splice(dragIndex,1)[0];state.rows.splice(target,0,moved);state.manualOrder=true;state.optimized=true;document.getElementById('status').textContent=state.lang==='fi'?'Järjestys muutettu käsin.':'Order changed manually.';render();log((state.lang==='fi'?'Järjestystä muutettu käsin: ':'Order changed manually: ')+`${dragIndex+1} → ${target+1}`);dragIndex=-1;};
 rowsEl.ondragend=()=>{dragIndex=-1;rowsEl.querySelectorAll('.dragOver').forEach(e=>e.classList.remove('dragOver'));};
 rowsEl.onchange=e=>{const i=e.target.dataset.i;if(i!==undefined){state.rows[+i][e.target.dataset.f]=e.target.value;state.rows[+i].accepted=!!state.rows[+i].address;state.optimized=false;state.manualOrder=false;render()}};
-document.getElementById('save').onclick=()=>{const r=state.rows[state.reviewIndex];r.recipient=norm(document.getElementById('editRecipient').value);r.address=norm(document.getElementById('editAddress').value);r.accepted=!!r.address;document.getElementById('reviewDlg').close();render();log('Osoite/vastaanottaja korjattu')};document.getElementById('cancel').onclick=()=>document.getElementById('reviewDlg').close();document.getElementById('prev').onclick=()=>{if(state.reviewIndex>0)openReview(state.reviewIndex-1)};document.getElementById('next').onclick=()=>{if(state.reviewIndex<state.rows.length-1)openReview(state.reviewIndex+1)};
-if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(e=>log('SW '+e.name));log('AjoJärjestys PWA v3.9.0 käynnistetty');
+document.getElementById('save').onclick=()=>{const r=state.rows[state.reviewIndex];r.recipient=norm(document.getElementById('editRecipient').value);r.address=norm(document.getElementById('editAddress').value);r.accepted=!!r.address;document.getElementById('reviewDlg').close();render();log(state.lang==='fi'?'Osoite/vastaanottaja korjattu':'Address/recipient corrected')};document.getElementById('cancel').onclick=()=>document.getElementById('reviewDlg').close();document.getElementById('prev').onclick=()=>{if(state.reviewIndex>0)openReview(state.reviewIndex-1)};document.getElementById('next').onclick=()=>{if(state.reviewIndex<state.rows.length-1)openReview(state.reviewIndex+1)};
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(e=>log('SW '+e.name));log((state.lang==='fi'?'AjoJärjestys PWA v3.9.1 käynnistetty':'AjoJärjestys PWA v3.9.1 started'));
 </script></body></html>
