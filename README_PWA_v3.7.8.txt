@@ -1,16 +1,23 @@
-AJOJÄRJESTYS v3.7.8 – PWA
+AJOJÄRJESTYS v3.7.8 – PWA / Chromebook
 Tekijä: Teemu H. Fingerroos
 
-Tämä on Chromebookille tarkoitettu asennettava PWA-versio.
-PDF-tiedostot käsitellään selaimessa paikallisesti. Tiedostoja ei lähetetä tämän PWA:n omalle palvelimelle.
+Tämä PWA-versio on päivitetty Windows v3.7.7 -version toimivan osoite- ja vastaanottajatunnistuksen pohjalta.
 
-Asennus:
-1. Julkaise tämä kansio HTTPS-osoitteeseen.
-2. Avaa osoite Chromella.
-3. Valitse Chromen valikosta "Asenna AjoJärjestys" / "Install AjoJärjestys".
-4. Käynnistä sovellus ChromeOS:n sovellusvalikosta.
+Tärkeä muutos:
+- PDF:n tekstikenttiä käsitellään PDF.js:n koordinaattien avulla.
+- Täsmällinen "Vastaanottaja:"-otsikko toimii ensisijaisena ankkurina.
+- Osoite valitaan vastaanottajalohkon sisältä, ei koko PDF:stä.
+- Lähettäjän osoitteen päätyminen vastaanottajan osoitteeksi on näin paljon epätodennäköisempää.
+- Osoitenumerot kuten 13-19, 12 A ja vastaavat ovat huomioitu selainlogiikassa.
+- Epävarma/puuttuva osoite avaa PDF:n vastaanottaja-alueen esikatselun.
+
+Käyttö:
+1. Julkaise kansio HTTPS-osoitteeseen GitHub Pagesilla.
+2. Avaa AjoJärjestys Chromebookin Chromella.
+3. Lisää PDF:t valitsemalla tiedostot tai raahaamalla ne ohjelmaan.
+4. Tarkista epävarmat rivit popupista.
+5. Muokkaa tarvittaessa vastaanottajaa tai osoitetta ja paina Hyväksy.
 
 Huomio:
-- PDF.js ladataan tällä versiolla cdnjs-palvelusta.
-- Osoitetunnistus on selainversiossa erillinen toteutus; Windowsin C#-toteutusta ei ole kopioitu sellaisenaan.
-- Tämä paketti on toimiva PWA-pohja, mutta Windows v3.7.7:n kaikkia ominaisuuksia ei vielä ole portattu 1:1.
+- PDF käsitellään selaimessa. Tätä versiota varten PDF.js ladataan cdnjs-palvelusta.
+- Tämä on selainportti Windows-version tunnistuslogiikasta; Windowsin PdfPig-kirjastoa ei käytetä selaimessa.
