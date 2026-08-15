@@ -1,4 +1,4 @@
-AjoJärjestys v3.7.11 – Chromebook / PWA
+AjoJärjestys v3.7.12 – Chromebook / PWA
 
 1. Lataa PDF-lähetteet.
 2. Hyväksy tunnistetut osoitteet tai korjaa ne manuaalisesti.

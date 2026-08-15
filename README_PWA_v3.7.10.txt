@@ -1,4 +1,4 @@
-AjoJärjestys PWA v3.7.11
+AjoJärjestys PWA v3.7.12
 
 Uutta tässä versiossa:
 - Yhdistä ja lataa PDF:t: lataa nykyisen ajojärjestyksen TXT-tiedostona.
