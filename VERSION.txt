@@ -1,6 +1,3 @@
-AjoJärjestys 3.7.12 (PWA)
-Tekijä: Teemu H. Fingerroos
+AjoJärjestys PWA v3.8.0
 
-Uutta: PDF-tiedostojen yhdistäminen ja lataaminen optimoidussa ajojärjestyksessä.
-Erillinen ajojärjestyksen TXT-tallennus poistettu.
-Reitityksen optimointi ja nykyinen PDF-/osoitetunnistus säilytetään.
+Lisätty manuaalinen ajojärjestyksen muokkaus vetämällä pysäkkejä.
