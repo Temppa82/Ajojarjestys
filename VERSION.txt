@@ -1,3 +1,2 @@
-AjoJärjestys PWA v3.8.0
-
-Lisätty manuaalinen ajojärjestyksen muokkaus vetämällä pysäkkejä.
+AjoJärjestys PWA v3.8.1
+Lisätty luotettava manuaalinen ajojärjestyksen muokkaus ▲/▼-painikkeilla.
