@@ -3,20 +3,202 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#1f2937"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg">
-<title>AjoJärjestys v3.8.0</title>
+<title>AjoJärjestys v3.9.0</title>
 <style>
-*{box-sizing:border-box}body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;background:#f3f4f6;color:#111827}header{background:#1f2937;color:#fff;padding:15px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px}header small{opacity:.8}main{max-width:1250px;margin:22px auto;padding:0 15px}.card{background:#fff;border-radius:12px;padding:18px;margin-bottom:15px;box-shadow:0 2px 10px #0001}.drop{border:2px dashed #9ca3af;border-radius:10px;padding:30px;text-align:center}.actions{display:flex;gap:8px;flex-wrap:wrap}button{font:inherit;border:0;border-radius:8px;padding:9px 13px;background:#2563eb;color:#fff;cursor:pointer}button.secondary{background:#6b7280}button:disabled{opacity:.5;cursor:not-allowed}table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:top}input[type=text]{width:100%;padding:8px;border:1px solid #d1d5db;border-radius:6px}.bad{background:#fee2e2}.ok{background:#dcfce7}.muted{color:#6b7280}.status{white-space:nowrap}.dragCell{width:90px;white-space:nowrap}.dragHandle{background:#6b7280;padding:5px 8px;margin-right:7px;cursor:grab}.dragHandle:active{cursor:grabbing}.dragOver{outline:2px dashed #2563eb;outline-offset:-2px}dialog{border:0;border-radius:12px;max-width:900px;width:92%;padding:0;box-shadow:0 15px 60px #0006}dialog::backdrop{background:#0007}.dlg{padding:18px}.previewWrap{background:#111827;border-radius:8px;padding:8px;text-align:center;max-height:55vh;overflow:auto}.previewWrap img{max-width:100%;height:auto;display:block;margin:auto}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.grid{grid-template-columns:1fr}table{font-size:14px}}
+*{box-sizing:border-box}
+:root{
+  --text:#111;
+  --muted:#6f6f6f;
+  --border:#b8b8b8;
+  --panel:#fff;
+  --bg:#fff;
+  --soft:#f6f6f6;
+  --danger:#fff0f0;
+  --success:#eef8ee;
+}
+body{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;margin:0;background:var(--bg);color:var(--text)}
+button,select,input{font:inherit}
+button{border:1px solid #999;border-radius:8px;padding:8px 13px;background:#f4f4f4;color:#111;cursor:pointer;min-height:34px}
+button:hover:not(:disabled){background:#e9e9e9}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.primary{font-weight:700;background:#111;color:#fff;border-color:#111}
+button.primary:hover:not(:disabled){background:#2a2a2a}
+button.secondary{background:#f4f4f4}
+header{padding:18px 18px 10px;background:#fff;border:0;color:#111}
+.brand{font-size:28px;font-weight:700;letter-spacing:.2px}
+.tagline{color:gray;margin-top:3px}
+.version{color:gray;font-size:13px;margin-top:3px}
+.langBox{position:absolute;right:18px;top:18px}
+.langBox select{height:34px;border:1px solid #b8b8b8;border-radius:8px;background:#fff;padding:0 10px}
+main{max-width:1280px;margin:0 auto;padding:0 18px 18px}
+.topbar{border:1px solid var(--border);border-radius:8px;padding:12px;margin:0 0 12px}
+.topbarInner{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.topbarHint{color:gray}
+.drop{border:1px dashed #aaa;border-radius:8px;padding:10px 12px;background:#fafafa;text-align:center}
+.drop p{margin:0 0 8px;color:#666}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:12px;align-items:stretch}
+.tablePanel,.sidePanel{border:1px solid var(--border);border-radius:8px;background:#fff;padding:14px}
+.tablePanel{min-width:0}
+.sectionTitle{font-size:18px;font-weight:700;margin:0 0 10px}
+.tableWrap{overflow:auto;border:1px solid #d4d4d4;border-radius:6px}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th,td{padding:8px 9px;border-bottom:1px solid #ddd;text-align:left;vertical-align:middle}
+th{background:#f5f5f5;font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+tr.bad{background:var(--danger)}
+tr.ok{background:var(--success)}
+td input[type=text]{width:100%;padding:7px 8px;border:1px solid #c8c8c8;border-radius:6px;background:#fff}
+td input[type=text]:focus{outline:2px solid #bbb;outline-offset:-1px}
+.status{white-space:nowrap;color:#444}
+.dragCell{width:72px;white-space:nowrap}
+.dragHandle{display:inline-flex;align-items:center;justify-content:center;width:32px;min-height:30px;padding:3px 7px;margin-right:6px;border:1px solid #aaa;background:#f1f1f1;color:#333;cursor:grab}
+.dragHandle:active{cursor:grabbing}
+.dragOver{outline:2px dashed #555;outline-offset:-2px}
+.fileCell{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#333}
+.sidePanel{padding:14px}
+.sidePanel h3{font-size:18px;margin:0}
+.sidePanel .summary{margin:8px 0 12px;line-height:1.35}
+.sidePanel label{display:block;font-weight:600;margin:8px 0 5px}
+.sidePanel input[type=text]{width:100%;height:32px;padding:6px 8px;border:1px solid #b8b8b8;border-radius:6px}
+.sidePanel .hint{color:gray;font-size:11px;line-height:1.35;margin:0 0 10px}
+.sidePanel button{width:100%;margin-bottom:7px}
+.sidePanel hr{border:0;border-top:1px solid #ddd;margin:14px 0}
+.actionsBottom{display:flex;justify-content:space-between;align-items:center;gap:15px;border-top:1px solid #ddd;margin-top:12px;padding-top:12px}
+.counts{color:#333}
+.bottomButtons{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.dragHint{color:gray;font-size:13px;margin:0 0 10px}
+dialog{border:1px solid #aaa;border-radius:8px;max-width:900px;width:92%;padding:0;box-shadow:0 15px 60px #0004}
+dialog::backdrop{background:#0006}
+.dlg{padding:18px}
+.previewWrap{background:#222;border-radius:6px;padding:8px;text-align:center;max-height:55vh;overflow:auto}
+.previewWrap img{max-width:100%;height:auto;display:block;margin:auto}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dlg input[type=text]{width:100%;height:34px;padding:7px 8px;border:1px solid #b8b8b8;border-radius:6px}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .sidePanel{order:-1}
+}
+@media(max-width:700px){
+  header{padding:15px 14px 9px}
+  .brand{font-size:24px}
+  .langBox{position:static;margin-top:10px}
+  main{padding:0 12px 14px}
+  .topbarInner{align-items:stretch;flex-direction:column}
+  .layout{gap:10px}
+  .tablePanel,.sidePanel{padding:11px}
+  .grid{grid-template-columns:1fr}
+  .actionsBottom{align-items:stretch;flex-direction:column}
+  .bottomButtons{justify-content:stretch}
+  .bottomButtons button{flex:1}
+}
 </style>
 </head>
 <body>
-<header><div><strong>AjoJärjestys</strong> <small>v3.8.0</small><br><small>Teemu H. Fingerroos</small></div><div><select id="lang"><option value="fi">Suomi</option><option value="en">English</option></select></div></header>
+<header>
+  <div class="brand">AJOJÄRJESTYS</div>
+  <div class="tagline">PDF-lähetteet → tarkistetut osoitteet → tieverkon mukaan optimoitu reitti</div>
+  <div class="version">v3.9.0 • Luoja: Teemu H. Fingerroos</div>
+  <div class="langBox"><select id="lang"><option value="fi">Suomi</option><option value="en">English</option></select></div>
+</header>
 <main>
-<section class="card"><h2 data-t="title">PDF-lähetteet</h2><div id="drop" class="drop"><p data-t="drop">Vedä PDF:t tähän tai valitse tiedostot.</p><input id="files" type="file" accept="application/pdf" multiple></div><p id="status" class="muted"></p></section>
-<section class="card"><div class="actions"><button id="acceptAll" data-t="acceptAll">Hyväksy kaikki</button><button id="optimize" disabled data-t="optimize">Optimoi</button><button id="clear" class="secondary" data-t="clear">Tyhjennä</button><button id="mergePdf" data-t="mergePdf">Yhdistä PDF:t</button><button id="settings" class="secondary" data-t="settings">Asetukset</button></div></section>
-<section class="card"><p class="muted" data-t="dragHint">Kun reitti on optimoitu, voit vetää pysäkkejä ☰-kahvasta ja muuttaa järjestystä käsin. Yhdistetty PDF käyttää lopullista järjestystä.</p><table><thead><tr><th>#</th><th data-t="order">Järjestys</th><th data-t="recipient">Vastaanottaja</th><th data-t="address">Osoite</th><th data-t="status">Tila</th><th></th></tr></thead><tbody id="rows"></tbody></table></section>
+  <section class="topbar">
+    <div class="topbarInner">
+      <div>
+        <strong>PDF-lähetteet</strong>
+        <div class="topbarHint">Lisää PDF:t tai raahaa ne tähän.</div>
+      </div>
+      <div class="actions">
+        <button id="clear" class="secondary" data-t="clear">Tyhjennä</button>
+      </div>
+    </div>
+    <div id="drop" class="drop">
+      <p data-t="drop">Vedä PDF:t tähän tai valitse tiedostot.</p>
+      <input id="files" type="file" accept="application/pdf" multiple>
+    </div>
+    <p id="status" class="muted"></p>
+  </section>
+
+  <div class="layout">
+    <section class="tablePanel">
+      <h2 class="sectionTitle">Lähetteet / pysäkit</h2>
+      <p class="dragHint" data-t="dragHint">Kun reitti on optimoitu, voit vetää pysäkkejä ☰-kahvasta ja muuttaa järjestystä käsin. Yhdistetty PDF käyttää lopullista järjestystä.</p>
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Lähete</th>
+              <th data-t="recipient">Vastaanottaja</th>
+              <th data-t="address">Osoite</th>
+              <th data-t="status">Tila</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <aside class="sidePanel">
+      <h3>1. Osoitteiden tarkistus</h3>
+      <p id="validationSummary" class="summary"></p>
+
+      <label data-t="start">Lähtöosoite</label>
+      <input id="start" type="text" value="Itäinen valkoisenlähteentie 18, Vantaa">
+
+      <label data-t="end">Päivän pääteosoite</label>
+      <input id="end" type="text" placeholder="esim. koti">
+      <p class="hint">Esim. koti. Jos jätät tyhjäksi, reitti ei pakota päätepistettä.</p>
+
+      <button id="acceptAll" data-t="acceptAll">✓ Hyväksy kaikki osoitteet</button>
+      <button id="settings" class="secondary" data-t="settings">Asetukset</button>
+
+      <hr>
+
+      <h3>2. Tieverkon optimointi</h3>
+      <p id="routeSummary" class="summary"></p>
+      <button id="optimize" class="primary" disabled data-t="optimize">OPTIMOI AJOREITTI</button>
+      <p class="hint">Internet-yhteys tarvitaan uusien osoitteiden ja reitin hakemiseen.</p>
+
+      <hr>
+
+      <h3>3. Lopputulos</h3>
+      <p class="hint">Voit raahata pysähdyksiä käsin optimoinnin jälkeen. Lopullista järjestystä käytetään yhdistetyssä PDF:ssä.</p>
+    </aside>
+  </div>
+
+  <div class="actionsBottom">
+    <div class="counts"><span id="countText"></span><span> • </span><span id="acceptedText"></span></div>
+    <div class="bottomButtons">
+      <button id="mergePdf" class="primary" data-t="mergePdf">YHDISTÄ JA LATAA PDF:T</button>
+    </div>
+  </div>
 </main>
-<dialog id="settingsDlg"><div class="dlg"><h2 data-t="settings">Asetukset</h2><div class="grid"><div><label data-t="start">Lähtöosoite</label><input id="start" type="text" value="Itäinen valkoisenlähteentie 18, Vantaa"></div><div><label data-t="end">Päivän päättymisosoite</label><input id="end" type="text" placeholder="esim. koti"></div></div><p><button id="closeSettings" data-t="close">Sulje</button> <button id="downloadLog" class="secondary" data-t="log">Lataa loki</button></p></div></dialog>
-<dialog id="reviewDlg"><div class="dlg"><h2 data-t="review">Tarkista tiedot</h2><p id="queue" class="muted"></p><div class="previewWrap"><img id="previewImg" alt="PDF:n vastaanottaja-alue"></div><p id="previewStatus" class="muted"></p><div class="grid"><div><label data-t="recipient">Vastaanottaja</label><input id="editRecipient" type="text"></div><div><label data-t="address">Osoite</label><input id="editAddress" type="text"></div></div><p><button id="prev" class="secondary">◀</button> <button id="next" class="secondary">▶</button> <button id="save" data-t="save">Hyväksy</button> <button id="cancel" class="secondary" data-t="close">Sulje</button></p></div></dialog>
+
+<dialog id="settingsDlg">
+  <div class="dlg">
+    <h2 data-t="settings">Asetukset</h2>
+    <div class="grid">
+      <div><label data-t="start">Lähtöosoite</label><input id="startSettings" type="text"></div>
+      <div><label data-t="end">Päivän pääteosoite</label><input id="endSettings" type="text" placeholder="esim. koti"></div>
+    </div>
+    <p><button id="closeSettings" data-t="close">Sulje</button> <button id="downloadLog" class="secondary" data-t="log">Lataa loki</button></p>
+  </div>
+</dialog>
+
+<dialog id="reviewDlg">
+  <div class="dlg">
+    <h2 data-t="review">Tarkista tiedot</h2>
+    <p id="queue" class="muted"></p>
+    <div class="previewWrap"><img id="previewImg" alt="PDF:n vastaanottaja-alue"></div>
+    <p id="previewStatus" class="muted"></p>
+    <div class="grid">
+      <div><label data-t="recipient">Vastaanottaja</label><input id="editRecipient" type="text"></div>
+      <div><label data-t="address">Osoite</label><input id="editAddress" type="text"></div>
+    </div>
+    <p><button id="prev" class="secondary">◀</button> <button id="next" class="secondary">▶</button> <button id="save" data-t="save">Hyväksy</button> <button id="cancel" class="secondary" data-t="close">Sulje</button></p>
+  </div>
+</dialog>
 <script type="module">
 const pdfjs=await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs');
 const { PDFDocument }=await import('https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/+esm');
@@ -140,7 +322,7 @@ function render(){
   state.rows.forEach((r,i)=>{
     const trEl=document.createElement('tr');
     trEl.className=!r.address?'bad':r.accepted?'ok':'';
-    trEl.innerHTML=`<td class="dragCell"><button class="dragHandle" draggable="true" data-drag="${i}" title="Vedä pysäkki uuteen paikkaan">☰</button><span>${i+1}</span></td><td><input data-i="${i}" data-f="recipient" value="${esc(r.recipient)}"></td><td><input data-i="${i}" data-f="address" value="${esc(r.address)}"></td><td class="status">${r.address?(r.accepted?tr('ok'):tr('reviewStatus')):tr('noAddress')}</td><td><button data-review="${i}">✎</button></td>`;
+    trEl.innerHTML=`<td class="dragCell"><button class="dragHandle" draggable="true" data-drag="${i}" title="Vedä pysäkki uuteen paikkaan">☰</button><span>${i+1}</span></td><td class="fileCell" title="${esc(r.file?.name||'')}">${esc(r.file?.name||'')}</td><td><input data-i="${i}" data-f="recipient" value="${esc(r.recipient)}"></td><td><input data-i="${i}" data-f="address" value="${esc(r.address)}"></td><td class="status">${r.address?(r.accepted?tr('ok'):tr('reviewStatus')):tr('noAddress')}</td><td><button data-review="${i}">✎</button></td>`;
     rowsEl.appendChild(trEl);
   });
   document.getElementById('optimize').disabled=state.rows.length===0||state.rows.some(r=>!r.accepted||!r.address);document.getElementById('mergePdf').disabled=!state.optimized;
@@ -185,5 +367,5 @@ rowsEl.ondrop=e=>{const tr=e.target.closest('tr');if(!tr||dragIndex<0)return;e.p
 rowsEl.ondragend=()=>{dragIndex=-1;rowsEl.querySelectorAll('.dragOver').forEach(e=>e.classList.remove('dragOver'));};
 rowsEl.onchange=e=>{const i=e.target.dataset.i;if(i!==undefined){state.rows[+i][e.target.dataset.f]=e.target.value;state.rows[+i].accepted=!!state.rows[+i].address;state.optimized=false;state.manualOrder=false;render()}};
 document.getElementById('save').onclick=()=>{const r=state.rows[state.reviewIndex];r.recipient=norm(document.getElementById('editRecipient').value);r.address=norm(document.getElementById('editAddress').value);r.accepted=!!r.address;document.getElementById('reviewDlg').close();render();log('Osoite/vastaanottaja korjattu')};document.getElementById('cancel').onclick=()=>document.getElementById('reviewDlg').close();document.getElementById('prev').onclick=()=>{if(state.reviewIndex>0)openReview(state.reviewIndex-1)};document.getElementById('next').onclick=()=>{if(state.reviewIndex<state.rows.length-1)openReview(state.reviewIndex+1)};
-if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(e=>log('SW '+e.name));log('AjoJärjestys PWA v3.8.0 käynnistetty');
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(e=>log('SW '+e.name));log('AjoJärjestys PWA v3.9.0 käynnistetty');
 </script></body></html>
